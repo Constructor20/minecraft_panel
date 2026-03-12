@@ -1,0 +1,44 @@
+services:
+  minecraft_panel:
+    image: php-apache-custom
+    container_name: minecraft_panel
+    restart: unless-stopped
+    platform: linux/arm64
+    ports:
+      - "8101:80"
+    volumes:
+      - .:/var/www/html
+      - /home/chris/.ssh:/home/chris/.ssh:ro
+    command: >
+      sh -c "cp /home/chris/.ssh/id_ed25519_nopass /var/www/id_ed25519 && chmod 600 /var/www/id_ed25519 && chown www-data:www-data /var/www/id_ed25519 && apt-get update -qq && apt-get install -y -qq openssh-client wakeonlan >/dev/null 2>&1 && apache2-foreground"
+    depends_on:
+      - db
+    networks:
+      - webnet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: mariadb:10.6
+    container_name: minecraft_panel_db
+    restart: unless-stopped
+    platform: linux/arm64
+    environment:
+      MYSQL_ROOT_PASSWORD: niveaumotdepasse123
+      MYSQL_DATABASE: minecraft_panel
+      MYSQL_USER: cricrilebg
+      MYSQL_PASSWORD: niveaumotdepasse123
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - webnet
+    expose:
+      - "3306"
+
+networks:
+  webnet:
+    external: true
+    name: dashboard_webnet
+
+volumes:
+  db_data:
