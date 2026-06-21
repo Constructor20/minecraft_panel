@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: minecraft-panel-laravel
+    container_name: minecraft_panel_laravel
+    restart: unless-stopped
+    platform: linux/arm64
+    ports:
+      - "8112:80"
+    volumes:
+      - .:/var/www/html
+      - /home/chris/.ssh:/home/chris/.ssh:ro
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+    command: >
+      sh -c "cp /home/chris/.ssh/id_ed25519_nopass /var/www/id_ed25519 2>/dev/null; chmod 600 /var/www/id_ed25519 2>/dev/null; chown www-data:www-data /var/www/id_ed25519 2>/dev/null; apt-get update -qq && apt-get install -y -qq openssh-client >/dev/null 2>&1; composer install --no-interaction --no-dev --optimize-autoloader 2>&1; php artisan migrate --force 2>&1; apache2-foreground"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - minecraft_panel_prod_default
+
+networks:
+  minecraft_panel_prod_default:
+    external: true
