@@ -1,66 +1,198 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎮 Minecraft Panel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Minecraft Panel** est une interface web moderne et légère pour administrer vos serveurs Minecraft, développée avec Laravel 11.
 
-## About Laravel
+> ⚡ Conçue pour fonctionner en duo avec une API Python distante (exécutée sur un PC Windows) qui pilote les processus serveur en temps réel.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🖼️ Aperçu
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Design dark / glassmorphism** — Interface sombre avec effets de verre, animations fluides et dégradés
+- **Sidebar rétractable** — Navigation latérale avec indicateur de page active
+- **Responsive** — Adapté mobile, tablette et desktop
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ✨ Fonctionnalités
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 🔐 Authentification
+- Inscription / Connexion par **email**
+- Profil utilisateur accessible depuis la sidebar
+- Protection CSRF, sessions sécurisées
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📊 Dashboard
+- Vue d'ensemble rapide : nombre de serveurs, accès console, fichiers, administration
+- Cartes d'accès rapide vers chaque section
 
-## Laravel Sponsors
+### 🖥️ Serveurs
+- Liste complète avec cartes stylisées (type, RAM, port, joueurs)
+- Statut en ligne / hors ligne
+- Actions par serveur : `Démarrer` (désactivé si en ligne), `Console` (vert), `Fichiers` (bleu)
+- Badge de type coloré selon le logiciel serveur (Forge, Vanilla, Paper, Purpur, Spigot)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 💻 Console (Terminal)
+- Terminal épuré, prêt à recevoir les flux d'une API distante
+- Pas de données fictives — Interface propre pour l'intégration future
+- Commande `Envoyer` avec retour horodaté
+- Raccourci `Ctrl+L` pour effacer
 
-### Premium Partners
+### 📁 Gestionnaire de fichiers
+- Vue d'ensemble : sélection d'un serveur parmi les cartes
+- Explorateur basique (liste statique en attendant l'API distante)
+- Dossiers typiques d'un serveur Minecraft (logs, plugins, world, config...)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### ⚙️ Administration
+- **CRUD serveurs** — Ajouter / Modifier / Supprimer des serveurs via modals
+- **Permissions** — Associer un utilisateur à un serveur avec droits (console, fichiers, démarrage...)
+- Interface glass dédiée avec tableaux et formulaires modaux
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🏗️ Architecture
 
-## Code of Conduct
+```
+┌─────────────────────────────────────────────────┐
+│              Raspberry Pi (Docker)               │
+│  ┌───────────────────────────────────────────┐  │
+│  │     minecraft_panel_laravel (Laravel 11)   │  │
+│  │  - Interface web (Apache + PHP 8.2)        │  │
+│  │  - Base de données MariaDB (externe)       │  │
+│  │  - Port 8112                               │  │
+│  └───────────────────────────────────────────┘  │
+│                                                  │
+│  ┌───────────────────────────────────────────┐  │
+│  │     MariaDB (Container séparé)            │  │
+│  │  - minecraft_panel_prod_db                │  │
+│  │  - Tables : users, servers, permissions   │  │
+│  └───────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────┘
+         ▲ API REST (future)
+         │
+┌─────────────────────────────────────────────────┐
+│              PC Windows (Client)                 │
+│  - Script Python de démarrage/arrêt serveur     │
+│  - Envoi/reception commandes console             │
+│  - Synchronisation des fichiers                 │
+└─────────────────────────────────────────────────┘
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Stack technique
+| Technologie | Version |
+|---|---|
+| Laravel | 11.54 |
+| PHP | 8.2.30 |
+| Apache | mod_php |
+| MariaDB | 10.x (container dédié) |
+| Docker | Compose v5.1 |
+| Tailwind CSS | CDN + personnalisé |
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🚀 Déploiement
 
-## License
+### Prérequis
+- Docker & Docker Compose sur le Raspberry Pi
+- MariaDB accessible (container `minecraft_panel_prod_db`)
+- Clé SSH pour accès distant
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Installation
+
+```bash
+git clone git@github.com:Constructor20/minecraft_panel.git
+cd minecraft_panel
+
+cp .env.example .env
+# Éditer .env avec vos identifiants de base de données
+
+docker compose up -d
+# Les migrations et dépendances s'exécutent automatiquement au démarrage
+```
+
+### Variables d'environnement principales
+```env
+APP_ENV=local
+APP_DEBUG=true
+DB_CONNECTION=mysql
+DB_HOST=minecraft_panel_prod_db
+DB_PORT=3306
+DB_DATABASE=minecraft_panel_laravel
+DB_USERNAME=minecraft_laravel
+DB_PASSWORD=****
+```
+
+---
+
+## 🗄️ Base de données
+
+**Aucune modification du schéma existant** — les modèles Laravel sont mappés sur les tables :
+- `users` — username, email, password
+- `servers` — 20 colonnes (name, type, ram, port, path, max_players...)
+- `permissions` — user_id, server_id, 5 droits booléens (can_console, can_files...)
+
+> Le statut `online/offline` est géré côté vue (parité de l'ID) — pas de colonne status.
+
+---
+
+## 📂 Structure du projet
+
+```
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── Auth/                  # LoginController, RegisterController, LogoutController
+│   │   ├── AdminController.php    # CRUD serveurs + permissions
+│   │   ├── DashboardController.php
+│   │   └── ServerController.php   # Serveurs, console, fichiers
+│   └── Models/
+│       ├── Server.php             # Casts + accesseurs + relations
+│       ├── Permission.php         # Casts booléens
+│       └── User.php               # Relation permissions()
+├── database/
+│   ├── migrations/                # 6 migrations
+│   └── seeders/DatabaseSeeder.php # 5 serveurs fictifs de démo
+├── resources/views/
+│   ├── layouts/app.blade.php      # Layout principal + sidebar
+│   ├── auth/                      # login.blade.php, register.blade.php
+│   ├── admin/index.blade.php      # CRUD serveurs + permissions
+│   ├── servers/                   # index, console, files
+│   ├── dashboard.blade.php
+│   └── welcome.blade.php
+├── routes/web.php                 # 15 routes (auth, protégées, admin)
+├── docker-compose.yml
+└── Dockerfile
+```
+
+---
+
+## 🧪 Développement
+
+```bash
+# Accéder au conteneur
+docker exec -it minecraft_panel_laravel bash
+
+# Vider le cache des vues
+php artisan view:clear && php artisan view:cache
+
+# Voir les routes
+php artisan route:list
+
+# Lancer les seeds
+php artisan db:seed
+```
+
+---
+
+## 🔮 Roadmap
+
+- [ ] API Python temps réel pour start/stop/console/files
+- [ ] Permissions automatiques à la création d'utilisateur
+- [ ] Upload / download / édition de fichiers via API
+- [ ] Logs de connexion et historique des commandes
+
+---
+
+## 👤 Auteur
+
+**Constructor20** — Projet personnel pour l'administration de serveurs Minecraft.
+
+Ce projet a été entièrement développé via **opencode**, un outil CLI de coding assisté par IA.
