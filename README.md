@@ -194,5 +194,3 @@ php artisan db:seed
 ## 👤 Auteur
 
 **Constructor20** — Projet personnel pour l'administration de serveurs Minecraft.
-
-Ce projet a été entièrement développé via **opencode**, un outil CLI de coding assisté par IA.
