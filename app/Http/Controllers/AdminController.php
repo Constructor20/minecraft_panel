@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
+    // Admin : tout en un — serveurs, utilisateurs, permissions
+    // Admin : tout en un — serveurs, utilisateurs, permissions
     public function index()
     {
         $users = User::all();
@@ -19,6 +21,8 @@ class AdminController extends Controller
     }
 
     // === SERVERS CRUD ===
+    // Créer un serveur (depuis le modal)
+    // Créer un serveur (depuis le modal)
     public function storeServer(Request $request)
     {
         $data = $request->validate([
@@ -38,6 +42,8 @@ class AdminController extends Controller
         return redirect()->route('admin.index')->with('success', 'Serveur créé');
     }
 
+    // Modifier un serveur
+    // Modifier un serveur
     public function updateServer(Request $request, Server $server)
     {
         $data = $request->validate([
@@ -60,6 +66,8 @@ class AdminController extends Controller
         return redirect()->route('admin.index')->with('success', 'Serveur mis à jour');
     }
 
+    // Supprimer + nettoyer les permissions liées
+    // Supprimer + nettoyer les permissions liées
     public function destroyServer(Server $server)
     {
         $server->permissions()->delete();
@@ -68,6 +76,8 @@ class AdminController extends Controller
     }
 
     // === PERMISSIONS CRUD ===
+    // Ajouter ou mettre à jour une permission (updateOrCreate)
+    // Ajouter ou mettre à jour une permission (updateOrCreate)
     public function storePermission(Request $request)
     {
         $data = $request->validate([
@@ -94,6 +104,39 @@ class AdminController extends Controller
         return redirect()->route('admin.index')->with('success', 'Permission mise à jour');
     }
 
+        // Modifier les droits d'une permission existante
+    // Modifier les droits d'une permission existante
+    public function updatePermission(Request $request, Permission $permission)
+    {
+        $data = $request->validate([
+            'can_view' => 'boolean',
+            'can_start' => 'boolean',
+            'can_stop' => 'boolean',
+            'can_console' => 'boolean',
+            'can_files' => 'boolean',
+        ]);
+
+        $permission->update([
+            'can_view' => $request->boolean('can_view'),
+            'can_start' => $request->boolean('can_start'),
+            'can_stop' => $request->boolean('can_stop'),
+            'can_console' => $request->boolean('can_console'),
+            'can_files' => $request->boolean('can_files'),
+        ]);
+
+        return redirect()->route('admin.index')->with('success', 'Permission mise à jour');
+    }
+
+    // Supprimer un utilisateur + ses permissions
+    // Supprimer un utilisateur + ses permissions
+    public function destroyUser(User $user)
+    {
+        $user->permissions()->delete();
+        $user->delete();
+        return redirect()->route('admin.index')->with('success', 'Utilisateur supprimé');
+    }
+    // Supprimer une permission
+    // Supprimer une permission
     public function destroyPermission(Permission $permission)
     {
         $permission->delete();

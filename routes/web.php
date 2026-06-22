@@ -30,5 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/servers/{server}', [AdminController::class, 'updateServer'])->name('admin.servers.update');
     Route::delete('/admin/servers/{server}', [AdminController::class, 'destroyServer'])->name('admin.servers.destroy');
     Route::post('/admin/permissions', [AdminController::class, 'storePermission'])->name('admin.permissions.store');
+    Route::put('/admin/permissions/{permission}', [AdminController::class, 'updatePermission'])->name('admin.permissions.update');
     Route::delete('/admin/permissions/{permission}', [AdminController::class, 'destroyPermission'])->name('admin.permissions.destroy');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
 });

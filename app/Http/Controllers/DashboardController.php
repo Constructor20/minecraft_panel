@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    // Dashboard : stats + liens rapides
+    // Dashboard : stats + liens rapides
     public function index()
     {
         $serverCount = Server::count();

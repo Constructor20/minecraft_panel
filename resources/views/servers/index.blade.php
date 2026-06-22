@@ -10,12 +10,12 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             @forelse($servers as $sv)
                 @php $online = $sv->id % 2 === 0; @endphp
-                <div class="group relative glass-card rounded-xl overflow-hidden fade-in" style="animation-delay: {{ $loop->index * 0.07 }}s">
-                    {{-- Top accent bar --}}
+                <div class="group relative glass-card rounded-xl overflow-hidden fade-in cursor-pointer" onclick="window.location='{{ route('servers.console', ['id' => $sv->id]) }}'" style="animation-delay: {{ $loop->index * 0.07 }}s">
+                    {{-- Bande de couleur en haut, ça rend les cards plus stylées --}}
                     <div class="h-1.5 w-full" style="background: linear-gradient(90deg, {{ $sv->type_color }}, {{ $sv->type_color }}88)"></div>
 
                     <div class="p-5">
-                        {{-- Header: icon + name + status --}}
+                        {{-- En-tête avec le type de serveur, son nom, et si c'est allumé --}}
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl shadow-lg" style="background: {{ $sv->type_color }}15; box-shadow: 0 0 20px {{ $sv->type_color }}10">
@@ -37,7 +37,7 @@
                             </div>
                         </div>
 
-                        {{-- Stats row --}}
+                        {{-- RAM, port, joueurs en petits blocs --}}
                         <div class="grid grid-cols-3 gap-2 mb-4">
                             <div class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-800/40 border border-slate-700/30">
                                 <svg class="w-4 h-4 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9h3m-3 6h3m10-6h3m-3 6h3M4 21h16a1 1 0 001-1V4a1 1 0 00-1-1H4a1 1 0 00-1 1v16a1 1 0 001 1z"/></svg>
@@ -62,10 +62,10 @@
                             </div>
                         </div>
 
-                        {{-- Actions --}}
+                        {{-- Boutons pour agir sur le serveur --}}
                         <div class="flex items-center gap-2">
                             @if(!$online)
-                                <button disabled class="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium bg-slate-800/30 text-slate-600 cursor-not-allowed border border-slate-700/20">
+                                <button disabled onclick="event.stopPropagation()" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium bg-slate-800/30 text-slate-600 cursor-not-allowed border border-slate-700/20">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
                                     Démarrer
                                 </button>
